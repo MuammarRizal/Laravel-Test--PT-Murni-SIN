@@ -172,6 +172,10 @@ export default {
             fuchsia: colors.fuchsia,
             pink: colors.pink,
             rose: colors.rose,
+            msn: {
+                500: "#38B6FF",
+                900: "#004166",
+            },
         }),
         columns: {
             auto: "auto",
@@ -347,6 +351,8 @@ export default {
                 '"Courier New"',
                 "monospace",
             ],
+            inter: ["Inter"],
+            quicksand: ["Quicksand"],
         },
         fontSize: {
             xs: ["0.75rem", { lineHeight: "1rem" }],
