@@ -80,7 +80,7 @@
 
   <div class="mx-auto max-w-7xl overflow-hidden">
     <!-- Section Title -->
-    <div class="mb-4 flex items-center">
+    <div class="flex items-center">
       <h2 class="my-5 text-2xl font-bold md:text-3xl">Top 10 Movies This Week</h2>
       <span class="top10-badge ml-4 rounded px-2 py-1 text-xs font-bold text-white md:text-sm">TOP 10</span>
     </div>
@@ -110,6 +110,51 @@
                   <div class="mt-1 flex items-center text-gray-200">
                     <span class="text-xs text-yellow-400">★</span>
                     <span class="ml-1 text-xs">{{ number_format($movie->vote_average, 1) }}/10</span>
+                  </div>
+                </div>
+                <div class="absolute left-0 top-0 rounded-br bg-red-600 px-2 py-1 text-xs font-bold text-white">
+                  #{{ $loop->iteration }}</div>
+              </a>
+            </div>
+          @endforeach
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mx-auto mt-4 max-w-7xl overflow-hidden">
+    <!-- Section Title -->
+    <div class="flex items-center">
+      <h2 class="my-5 text-2xl font-bold md:text-3xl">Top 10 TV This Week</h2>
+      <span class="top10-badge ml-4 rounded px-2 py-1 text-xs font-bold text-white md:text-sm">TOP 10</span>
+    </div>
+
+    <!-- Swiper Container -->
+    <div class="relative h-max w-auto py-2">
+      <div class="swiper top10Swiper overflow-visible">
+        <div class="swiper-wrapper">
+
+          @foreach ($tvTrending as $tv)
+            @php
+              $original_date = $tv->first_air_date;
+              $timestamp = strtotime($original_date);
+              $tvYear = date('Y', $timestamp);
+            @endphp
+            <div class="swiper-slide group relative overflow-hidden rounded-lg" style="width: 16.666%;">
+              <a href="/tv/{{ $tv->id }}" class="relative aspect-[2/3]">
+                <img src="{{ $tmdb_imageBaseUrl }}/original/{{ $tv->poster_path }}" alt="{{ $tv->name }}"
+                  class="h-full w-full object-cover">
+                <div
+                  class="absolute left-0 top-0 h-full w-full bg-gradient-to-t from-black/80 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                </div>
+                <div
+                  class="absolute bottom-0 left-0 p-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <h3 class="text-sm font-bold text-white md:text-base">{{ $tv->name }}</h3>
+                  <h4 class="text-xs font-bold text-gray-300">{{ $tvYear }}</h4>
+                  <div class="mt-1 flex items-center text-gray-200">
+                    <span class="text-xs text-yellow-400">★</span>
+                    <span class="ml-1 text-xs">{{ number_format($tv->vote_average, 1) }}/10</span>
                   </div>
                 </div>
                 <div class="absolute left-0 top-0 rounded-br bg-red-600 px-2 py-1 text-xs font-bold text-white">

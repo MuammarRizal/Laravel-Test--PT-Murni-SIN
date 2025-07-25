@@ -12,54 +12,61 @@ class MovieController extends Controller
         $baseURL = env('TMDB_API_URL');
         $imageBaseUrl = env('TMDB_API_IMAGE_URL');
         $apiKey = env('TMDB_API_KEY');
-        $MAX_BANNER = 5;
 
         $bannerResponse = Http::get("{$baseURL}/trending/all/week",[
             'api_key' => $apiKey
         ]);
         Debugbar::info($bannerResponse);
-        $bannerArray = [];
-
-        if ($bannerResponse -> successful()){
-            $resultArray = $bannerResponse->object()->results;
-            if(isset($resultArray)){
-                foreach ($resultArray as $item) {
-                    array_push($bannerArray, $item);
-
-                    if(count($bannerArray) == $MAX_BANNER){
-                        break;
-                    }
-                }
-            }
-        }
-
-        // TRENDING MOVIE
-        $topTrendingMovie = Http::get("{$baseURL}/trending/movie/week",[
-            'api_key' => $apiKey
-        ]);
-
-        $movies = [];
-
-        if ($topTrendingMovie -> successful()){
-            $moviesTrending = $topTrendingMovie->object()->results;
-            if(isset($moviesTrending)){
-                foreach ($moviesTrending as $item) {
-                    array_push($movies, $item);
-
-                    if(count($movies) == 10){
-                        break;
-                    }
-                }
-            }
-        }
+        $trendingMovies = $this->getDataAPI('trending', 'movie', 'week', 10);
+        $trendingTV = $this->getDataAPI('trending', 'tv', 'week', 10);
+        $banners = $this->getDataAPI('trending', 'movie', 'week', 5);
+       
 
         return view('pages.home', [
             'tmdb_baseUrl' => $baseURL,
             'tmdb_imageBaseUrl' => $imageBaseUrl,
             'tmdb_api_key' => $apiKey,
-            'banners' => $bannerArray,
-            'moviesTrending' => $movies
+            'banners' => $banners,
+            'moviesTrending' => $trendingMovies,
+            'tvTrending' => $trendingTV
             
         ]);
+    }
+
+    private function getDataAPI($type='trending', $media='movie', $daily='week',$datalength=10){
+        $baseURL = env('TMDB_API_URL');
+        $apiKey = env('TMDB_API_KEY');
+
+        $endpoint = "{$baseURL}/{$type}/{$media}/{$daily}";
+
+        $response = Http::get($endpoint,[
+            'api_key' => $apiKey
+        ]);
+
+
+        if (!$response->successful()) {
+        // Log error or return empty array
+            return [];
+        }
+
+        $results = $response->object()->results ?? [];
+
+        // Ambil hanya sejumlah data yang diinginkan
+        return array_slice($results, 0, $datalength);
+        // $data = [];
+
+        // if ($response -> successful()){
+        //     $dataResponse = $response->object()->results;
+        //     if(isset($dataResponse)){
+        //         foreach ($dataResponse as $item) {
+        //             array_push($data, $item);
+
+        //             if(count($data) == $datalength){
+        //                 break;
+        //             }
+        //         }
+        //     }
+        // }
+        // return $data;
     }
 }
