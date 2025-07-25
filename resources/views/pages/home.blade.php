@@ -3,23 +3,17 @@
 @section('title', 'TEST PT MURNI SOULISINDO NUSANTARA | HOME')
 
 @section('content')
-  <section class="relative">
+  <section class="relative mt-1">
     <!-- Swiper Container -->
-    <div class="swiper netflixHero h-screen w-full">
+    <div class="swiper netflixHero h-[80vh] w-full">
       <div class="swiper-wrapper">
         @foreach ($banners as $banner)
           <!-- Single Slide -->
           <div class="swiper-slide relative">
             <!-- Video Background with Fallback -->
             <div class="absolute inset-0 z-0">
-              <video autoplay loop muted playsinline class="h-full w-full object-cover">
-                <source src="{{ $banner->video_backdrop ?? 'https://www.w3schools.com/howto/rain.mp4' }}"
-                  type="video/mp4" />
-                <!-- Fallback Image -->
-                <img
-                  src="{{ $banner->backdrop_path ? $tmdb_imageBaseUrl . 'w1280' . $banner->backdrop_path : asset('images/placeholder.jpg') }}"
-                  alt="{{ $banner->title }}" class="h-full w-full object-cover">
-              </video>
+              <img class="h-full w-full object-cover" src="{{ $tmdb_imageBaseUrl }}/original/{{ $banner->backdrop_path }}"
+                alt="">
               <!-- Gradient Overlay -->
               <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
             </div>
@@ -49,7 +43,8 @@
 
                 <!-- Action Buttons -->
                 <div class="flex flex-wrap items-center gap-3">
-                  <button
+                  {{-- <a
+                  href="{}"
                     class="flex items-center gap-2 rounded bg-white px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-gray-300 md:px-6 md:py-3 md:text-base">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd"
@@ -57,8 +52,8 @@
                         clip-rule="evenodd" />
                     </svg>
                     Play
-                  </button>
-                  <button
+                  </a> --}}
+                  <a href="/movie/{{ $banner->id }}"
                     class="flex items-center gap-2 rounded bg-gray-600 bg-opacity-70 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-opacity-90 md:px-6 md:py-3 md:text-base">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd"
@@ -66,7 +61,7 @@
                         clip-rule="evenodd" />
                     </svg>
                     More Info
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
