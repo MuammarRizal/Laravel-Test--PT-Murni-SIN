@@ -33,3 +33,19 @@
 .swiper-pagination-bullet-active {
     transform: scale(1.2);
 }
+
+.top10-badge {
+    background: linear-gradient(
+        90deg,
+        rgba(229, 9, 20, 1) 0%,
+        rgba(193, 10, 36, 1) 50%,
+        rgba(168, 12, 46, 1) 100%
+    );
+}
+.swiper-slide {
+    transition: transform 0.3s ease;
+}
+.swiper-slide:hover {
+    transform: scale(1.05);
+    z-index: 10;
+}

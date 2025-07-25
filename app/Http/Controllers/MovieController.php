@@ -14,7 +14,7 @@ class MovieController extends Controller
         $apiKey = env('TMDB_API_KEY');
         $MAX_BANNER = 5;
 
-        $bannerResponse = Http::get("{$baseURL}/trending/movie/week",[
+        $bannerResponse = Http::get("{$baseURL}/trending/all/week",[
             'api_key' => $apiKey
         ]);
         Debugbar::info($bannerResponse);
@@ -33,11 +33,33 @@ class MovieController extends Controller
             }
         }
 
+        // TRENDING MOVIE
+        $topTrendingMovie = Http::get("{$baseURL}/trending/movie/week",[
+            'api_key' => $apiKey
+        ]);
+
+        $movies = [];
+
+        if ($topTrendingMovie -> successful()){
+            $moviesTrending = $topTrendingMovie->object()->results;
+            if(isset($moviesTrending)){
+                foreach ($moviesTrending as $item) {
+                    array_push($movies, $item);
+
+                    if(count($movies) == 10){
+                        break;
+                    }
+                }
+            }
+        }
+
         return view('pages.home', [
             'tmdb_baseUrl' => $baseURL,
             'tmdb_imageBaseUrl' => $imageBaseUrl,
             'tmdb_api_key' => $apiKey,
-            'banners' => $bannerArray
+            'banners' => $bannerArray,
+            'moviesTrending' => $movies
+            
         ]);
     }
 }
