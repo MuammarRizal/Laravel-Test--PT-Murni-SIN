@@ -161,10 +161,11 @@
                   #{{ $loop->iteration }}</div>
               </a>
             </div>
-          @endforeach
-
         </div>
+        @endforeach
+
       </div>
     </div>
+  </div>
   </div>
 @endsection

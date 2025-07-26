@@ -58,6 +58,83 @@ class MovieController extends Controller
         ));
     }
 
+    public function movieDetail(string $id){
+        // {{TMDB_URL}}/movie/1087192?api_key={{TMDB_API_KEY}}
+        $dataResponse = Http::get("{$this->baseURL}/movie/{$id}",[
+            'api_key' => $this->apiKey
+        ]);
+
+        $data = [];
+        if ($dataResponse -> successful()){
+            $data = $dataResponse->object();
+            if(!isset($data)){
+                $data = [];
+            }
+        }
+
+        $responseVideo = Http::get("{$this->baseURL}/movie/{$id}/videos",[
+            'api_key' => $this->apiKey
+        ]);
+        $dataVideo= '';
+        Debugbar::info($responseVideo);
+        if ($responseVideo -> successful()){
+            $videoData = $responseVideo->object()->results;
+            if(isset($videoData)){
+                $firstVideo = collect($videoData)->first();
+                $dataVideo = $firstVideo;
+            }
+        }
+
+        
+        Debugbar::info($responseVideo);
+        Debugbar::info($data);
+        return view('pages.movie_detail', [
+            'tmdb_baseUrl' => $this->baseURL,
+            'tmdb_imageBaseUrl' => $this->imageBaseUrl,
+            'tmdb_api_key' => $this->apiKey,
+            'data' => $data,
+            'data_video' => $dataVideo
+        ]);
+    }
+    public function tvDetail(string $id){
+        // {{TMDB_URL}}/movie/1087192?api_key={{TMDB_API_KEY}}
+        $dataResponse = Http::get("{$this->baseURL}/tv/{$id}",[
+            'api_key' => $this->apiKey
+        ]);
+
+        $data = [];
+        if ($dataResponse -> successful()){
+            $data = $dataResponse->object();
+            if(!isset($data)){
+                $data = [];
+            }
+        }
+
+        $responseVideo = Http::get("{$this->baseURL}/tv/{$id}/videos",[
+            'api_key' => $this->apiKey
+        ]);
+        $dataVideo= '';
+        Debugbar::info($responseVideo);
+        if ($responseVideo -> successful()){
+            $videoData = $responseVideo->object()->results;
+            if(isset($videoData)){
+                $firstVideo = collect($videoData)->first();
+                $dataVideo = $firstVideo;
+            }
+        }
+
+        
+        Debugbar::info($responseVideo);
+        Debugbar::info($data);
+        return view('pages.tv_detail', [
+            'tmdb_baseUrl' => $this->baseURL,
+            'tmdb_imageBaseUrl' => $this->imageBaseUrl,
+            'tmdb_api_key' => $this->apiKey,
+            'data' => $data,
+            'data_video' => $dataVideo
+        ]);
+    }
+
     protected function fetchMediaData(string $mediaType)
     {
         return Http::get("{$this->baseURL}/discover/{$mediaType}", [

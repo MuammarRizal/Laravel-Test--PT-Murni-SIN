@@ -24,3 +24,5 @@ Route::get('/', [MovieController::class,'index']);
 Route::get('/movies',[MovieController::class,'movies']);
 Route::get('/tv',[MovieController::class,'tv']);
 Route::get('/search',[SearchController::class,'index']);
+Route::get('/movie/{id}',[MovieController::class,'movieDetail']);
+Route::get('/tv/{id}',[MovieController::class,'tvDetail']);
