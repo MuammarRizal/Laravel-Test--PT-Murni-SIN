@@ -97,7 +97,6 @@
       Load More
     </button>
   </div>
-  </div>
 
   <script>
     let currentPage = 1;
