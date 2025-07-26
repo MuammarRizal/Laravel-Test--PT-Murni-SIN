@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,3 +22,5 @@ Route::get('/', function () {
 
 Route::get('/', [MovieController::class,'index']);
 Route::get('/movies',[MovieController::class,'movies']);
+Route::get('/tv',[MovieController::class,'tv']);
+Route::get('/search',[SearchController::class,'index']);

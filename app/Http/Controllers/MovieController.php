@@ -8,87 +8,94 @@ use Illuminate\Support\Facades\Http;
 
 class MovieController extends Controller
 {
-    public function index(){
-        $baseURL = env('TMDB_API_URL');
-        $imageBaseUrl = env('TMDB_API_IMAGE_URL');
-        $apiKey = env('TMDB_API_KEY');
+    protected $baseURL;
+    protected $imageBaseUrl;
+    protected $apiKey;
+    protected $minimalVoter = 100;
+    protected $defaultSort = 'popularity.desc';
+    protected $defaultPage = 1;
 
-        $bannerResponse = Http::get("{$baseURL}/trending/all/week",[
-            'api_key' => $apiKey
-        ]);
-        Debugbar::info($bannerResponse);
-        $trendingMovies = $this->getDataAPI('trending', 'movie', 'week', 10);
-        $trendingTV = $this->getDataAPI('trending', 'tv', 'week', 10);
-        $banners = $this->getDataAPI('trending', 'movie', 'week', 5);
-       
+    public function __construct()
+    {
+        $this->baseURL = env('TMDB_API_URL');
+        $this->imageBaseUrl = env('TMDB_API_IMAGE_URL');
+        $this->apiKey = env('TMDB_API_KEY');
+    }
+
+    public function index()
+    {
+        Debugbar::info(
+            Http::get("{$this->baseURL}/trending/all/week", ['api_key' => $this->apiKey])
+        );
 
         return view('pages.home', [
-            'tmdb_baseUrl' => $baseURL,
-            'tmdb_imageBaseUrl' => $imageBaseUrl,
-            'tmdb_api_key' => $apiKey,
-            'banners' => $banners,
-            'moviesTrending' => $trendingMovies,
-            'tvTrending' => $trendingTV
-            
+            'tmdb_baseUrl' => $this->baseURL,
+            'tmdb_imageBaseUrl' => $this->imageBaseUrl,
+            'tmdb_api_key' => $this->apiKey,
+            'banners' => $this->getTrendingData('movie', 5),
+            'moviesTrending' => $this->getTrendingData('movie'),
+            'tvTrending' => $this->getTrendingData('tv')
         ]);
     }
 
-    public function movies(){
-        $baseURL = env('TMDB_API_URL');
-        $imageBaseUrl = env('TMDB_API_IMAGE_URL');
-        $apiKey = env('TMDB_API_KEY');
-        $sortBy = "popularity.desc";
-        $page=1;
-        $minimalVoter = 100;
+    public function movies()
+    {
+        $response = $this->fetchMediaData('movie');
 
-        $endpoint = "{$baseURL}/discover/movie";
-        $response = Http::get($endpoint,[
-            'api_key' => $apiKey,
-            'sort_by' => $sortBy,
-            'vote_count.gte' => $minimalVoter,
-            'page' => $page
-        ]);
+        return view('pages.movies', $this->buildViewData(
+            'movies', 
+            $response
+        ));
+    }
 
-        $movies = [];
+    public function tv()
+    {
+        $response = $this->fetchMediaData('tv');
 
-        if ($response -> successful()){
-            $responseAPI = $response->object()->results;
-            if(isset($responseAPI)){
-                foreach ($responseAPI as $item) {
-                    array_push($movies, $item);
-                }
-            }
-        }
-        return view('pages.movies',[
-            'tmdb_baseUrl' => $baseURL,
-            'tmdb_imageBaseUrl' => $imageBaseUrl,
-            'tmdb_api_key' => $apiKey,
-            'movies' => $movies,
-            'sortBy' => $sortBy,
-            'page' => $page,
-            'minimalVoter' => $minimalVoter
+        return view('pages.tv', $this->buildViewData(
+            'tvShows', 
+            $response
+        ));
+    }
+
+    protected function fetchMediaData(string $mediaType)
+    {
+        return Http::get("{$this->baseURL}/discover/{$mediaType}", [
+            'api_key' => $this->apiKey,
+            'sort_by' => $this->defaultSort,
+            'vote_count.gte' => $this->minimalVoter,
+            'page' => $this->defaultPage
         ]);
     }
 
-    private function getDataAPI($type='trending', $media='movie', $daily='week',$datalength=10){
-        $baseURL = env('TMDB_API_URL');
-        $apiKey = env('TMDB_API_KEY');
+    protected function buildViewData(string $itemsKey, $response)
+    {
+        $items = $response->successful() 
+            ? $response->object()->results ?? []
+            : [];
 
-        $endpoint = "{$baseURL}/{$type}/{$media}/{$daily}";
+        return [
+            'tmdb_baseUrl' => $this->baseURL,
+            'tmdb_imageBaseUrl' => $this->imageBaseUrl,
+            'tmdb_api_key' => $this->apiKey,
+            $itemsKey => $items,
+            'sortBy' => $this->defaultSort,
+            'page' => $this->defaultPage,
+            'minimalVoter' => $this->minimalVoter
+        ];
+    }
 
-        $response = Http::get($endpoint,[
-            'api_key' => $apiKey
+    protected function getTrendingData(string $mediaType, int $dataLength = 10)
+    {
+        $response = Http::get("{$this->baseURL}/trending/{$mediaType}/week", [
+            'api_key' => $this->apiKey
         ]);
-
 
         if (!$response->successful()) {
-        // Log error or return empty array
             return [];
         }
 
         $results = $response->object()->results ?? [];
-
-        // Ambil hanya sejumlah data yang diinginkan
-        return array_slice($results, 0, $datalength);
+        return array_slice($results, 0, $dataLength);
     }
 }
