@@ -33,6 +33,43 @@ class MovieController extends Controller
         ]);
     }
 
+    public function movies(){
+        $baseURL = env('TMDB_API_URL');
+        $imageBaseUrl = env('TMDB_API_IMAGE_URL');
+        $apiKey = env('TMDB_API_KEY');
+        $sortBy = "popularity.desc";
+        $page=1;
+        $minimalVoter = 100;
+
+        $endpoint = "{$baseURL}/discover/movie";
+        $response = Http::get($endpoint,[
+            'api_key' => $apiKey,
+            'sort_by' => $sortBy,
+            'vote_count.gte' => $minimalVoter,
+            'page' => $page
+        ]);
+
+        $movies = [];
+
+        if ($response -> successful()){
+            $responseAPI = $response->object()->results;
+            if(isset($responseAPI)){
+                foreach ($responseAPI as $item) {
+                    array_push($movies, $item);
+                }
+            }
+        }
+        return view('pages.movies',[
+            'tmdb_baseUrl' => $baseURL,
+            'tmdb_imageBaseUrl' => $imageBaseUrl,
+            'tmdb_api_key' => $apiKey,
+            'movies' => $movies,
+            'sortBy' => $sortBy,
+            'page' => $page,
+            'minimalVoter' => $minimalVoter
+        ]);
+    }
+
     private function getDataAPI($type='trending', $media='movie', $daily='week',$datalength=10){
         $baseURL = env('TMDB_API_URL');
         $apiKey = env('TMDB_API_KEY');
@@ -53,20 +90,5 @@ class MovieController extends Controller
 
         // Ambil hanya sejumlah data yang diinginkan
         return array_slice($results, 0, $datalength);
-        // $data = [];
-
-        // if ($response -> successful()){
-        //     $dataResponse = $response->object()->results;
-        //     if(isset($dataResponse)){
-        //         foreach ($dataResponse as $item) {
-        //             array_push($data, $item);
-
-        //             if(count($data) == $datalength){
-        //                 break;
-        //             }
-        //         }
-        //     }
-        // }
-        // return $data;
     }
 }

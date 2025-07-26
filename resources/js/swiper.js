@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
         loop: true,
         autoplay: {
             delay: 8000,
-            disableOnInteraction: false,
         },
         speed: 1000,
         effect: "fade",
@@ -18,7 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
             nextEl: ".swiper-button-next",
             prevEl: ".swiper-button-prev",
         },
-        allowTouchMove: false,
     });
 });
 
