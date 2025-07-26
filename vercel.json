@@ -1,0 +1,35 @@
+{
+    "version": 2,
+    "framework": null,
+    "functions": {
+        "api/index.php": { "runtime": "vercel-php@0.6.0" }
+    },
+    "routes": [
+        { "src": "/build/(.*)", "dest": "/public/build/" },
+        { "src": "/(.*)", "dest": "/api/index.php" }
+    ],
+    "public": true,
+    "buildCommand": "vite build",
+    "outputDirectory": "public",
+    "env": {
+        "APP_ENV": "production",
+        "APP_DEBUG": "false",
+        "APP_URL": "https://yourproductionurl.com",
+        "APP_KEY": "base64:TGaVaXwhWgjn9akhE4SCSIjGG/cQqvICUQ+PgLA3Bs0=",
+        "APP_CONFIG_CACHE": "/tmp/config.php",
+        "APP_EVENTS_CACHE": "/tmp/events.php",
+        "APP_PACKAGES_CACHE": "/tmp/packages.php",
+        "APP_ROUTES_CACHE": "/tmp/routes.php",
+        "APP_SERVICES_CACHE": "/tmp/services.php",
+        "VIEW_COMPILED_PATH": "/tmp",
+        "CACHE_DRIVER": "array",
+        "LOG_CHANNEL": "stderr",
+        "SESSION_DRIVER": "cookie",
+        "TMDB_API_KEY": "6572f3d81654a3e56837bd2fe63353ca",
+        "TMDB_ACCESS_TOKEN": "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMzBiMWRjOTc3ZGJkNGU3NjFhZGI1YmFhN2UwMjc3MSIsIm5iZiI6MTY4MTM4NzcwMC4yNTQwMDAyLCJzdWIiOiI2NDM3ZjBiNDFkNTM4NjAxMTM1YjdhNjciLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.7XU5cZ-1UlrGZYG6f1Cr7XVI3Pkhhjky_SOZ8LJmW28",
+        "TMDB_API_URL": "https://api.themoviedb.org/3",
+        "TMDB_API_IMAGE_URL": "https://image.tmdb.org/t/p",
+        "TMDB_API_IMAGE_URL_COMPRESS": "https://image.tmdb.org/t/p/w500",
+        "TMDB_API_IMAGE_URL_ORIGINAL": "https://image.tmdb.org/t/p/original"
+    }
+}
